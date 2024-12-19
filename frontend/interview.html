@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/index.css" />
+  <script src="https://webgazer.cs.brown.edu/webgazer.js?" defer></script>
+  <script src="./js/script.js" defer></script>
+  <script src="https://cdn.socket.io/4.1.1/socket.io.min.js"
+    integrity="sha384-cdrFIqe3RasCMNE0jeFG9xJHog/tgOVC1E9Lzve8LQN1g5WUHo0Kvk1mawWjxX7a"
+    crossorigin="anonymous"></script>
+
+  <title>Interview</title>
+  <style></style>
+</head>
+
+<body onload="getuser()">
+  <nav class="navbar navbar-light bg-light">
+    <a class="navbar-brand" href="index.html">
+      <!-- <img src="../frontend/assets/logo.png" width="" height="50" alt="50"> -->
+    </a>
+    <div class="navbar-right user" style="padding: 5px; margin: 10px">
+      <div class="useritem" id="useritem"></div>
+      <img src="../frontend/assets/pic.png" />
+    </div>
+  </nav>
+  <audio id="myAudio">
+    <source src="./alert.mp3" type="audio/mp3" />
+    <!-- <source src="./mj.mp3" type="audio/mp3"> -->
+  </audio>
+  <div class="inter-panel">
+    <textarea id="bot" rows="6" cols="50" readonly>
+
+
+          Hello, Welcome to AIS - AI Interview System
+
+      </textarea><br />
+    <textarea id="output" rows="10" cols="50" readonly></textarea><br />
+    <div>
+
+      <button id="start" class="inter-btn"> <img height="16" src="./assets/play-solid.svg" /> Start Recording</button>
+      <button id="stop" class="inter-btn" disabled> <img height="16" src="./assets/stop-solid.svg" /> Stop
+        Recording</button>
+    </div>
+    <br />
+    <div>
+      <button id="reset" class="inter-btn"> <img height="16" src="./assets/arrow-rotate-left-solid.svg" /> Reset Answer
+      </button>
+      <button id="submit" class="inter-btn" style="background-color: lightgreen">
+        <img height="16" src="./assets/arrow-right-solid.svg" /> Submit Answer
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const submitBtn = document.getElementById("submit");
+    const startBtn = document.getElementById("start");
+    const stopBtn = document.getElementById("stop");
+    const resetBtn = document.getElementById("reset");
+    const botTextArea = document.getElementById("bot");
+    const outputTextarea = document.getElementById("output");
+
+    // Text-to-Speech
+    function speak(myText) {
+      const utterance = new SpeechSynthesisUtterance(myText);
+      const voices = speechSynthesis.getVoices();
+      utterance.voice = voices[0]; // Choose a specific voice
+      // Speak the text
+      speechSynthesis.speak(utterance);
+    }
+
+    // Speech-to-Text
+    if (
+      "SpeechRecognition" in window ||
+      "webkitSpeechRecognition" in window
+    ) {
+      recognition = new (window.SpeechRecognition ||
+        window.webkitSpeechRecognition)();
+      recognition.lang = "en-US";
+
+      recognition.onstart = () => {
+        console.log("Speech Recognition started");
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+      };
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        outputTextarea.value += transcript;
+        outputTextarea.value += ". ";
+
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+        startBtn.style.backgroundColor = "rgba(34, 123, 224, 0.5)";
+      };
+
+      recognition.onerror = (event) => {
+        console.error("Speech recognition error : ", event.error);
+      };
+
+      startBtn.addEventListener("click", () => {
+        recognition.start();
+        startBtn.style.backgroundColor = "#f44336";
+      });
+
+      resetBtn.addEventListener("click", () => {
+        outputTextarea.value = "";
+      });
+
+      stopBtn.addEventListener("click", () => {
+        console.log("Speech recognition ended");
+        recognition.stop();
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+        startBtn.style.backgroundColor = "rgba(34, 123, 224, 0.5)";
+      });
+
+      // Call to Interviewer AI API
+      async function sendMessage(userInput, botTextArea) {
+        const userMessage = userInput;
+        if (userMessage === "") return;
+        try {
+          const response = await fetch(
+            // Interviewer API
+            "https://interview-ai-api-cs4w.onrender.com/api/chatbot",
+            //"https://interview-ai-api.onrender.com/api/chatbot",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ userMessage }),
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch response from the server");
+          }
+
+          const data = await response.json();
+          botResponse = data.botMessage;
+          //console.log(data);
+          console.log(botResponse);
+          // speak bot response
+          speak(botResponse);
+          botTextArea.value = botResponse;
+        } catch (error) {
+          console.error("Error:", error.message);
+        }
+      }
+
+      // Send answer to Interviewer
+      submitBtn.addEventListener("click", () => {
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+        startBtn.style.backgroundColor = "rgba(34, 123, 224, 0.5)";
+
+        console.log("Answer submitted!");
+
+        var userInput = outputTextarea.value;
+        sendMessage(userInput, botTextArea);
+
+        outputTextarea.value = "";
+      });
+    } else {
+      console.error("Speech recognition not supported in this browser");
+      startBtn.disabled = true;
+      stopBtn.disabled = true;
+    }
+  </script>
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+  integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+  integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="js/login.js"></script>
+<script src="js/interview.js"></script>
+
+</html>
