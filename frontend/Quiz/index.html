@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCQ Quiz Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>🎯 MCQ Quiz Game</h1>
+        <p>Answer correctly to earn <strong>10 coins</strong> per question!</p>
+        <div id="question-container">
+            <p id="question">Loading...</p>
+            <div id="options"></div>
+        </div>
+        <button id="next-btn">Next</button>
+        <p id="coins-earned">Coins: 0</p>
+    </div>
+    
+    <!-- Leaderboard Section (Hidden Initially) -->
+    <div id="leaderboard" style="display: none;"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

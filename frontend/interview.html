@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/index.css" />
+  <script src="https://webgazer.cs.brown.edu/webgazer.js?" defer></script>
+  <script src="./js/script.js" defer></script>
+  <script src="https://cdn.socket.io/4.1.1/socket.io.min.js"
+    integrity="sha384-cdrFIqe3RasCMNE0jeFG9xJHog/tgOVC1E9Lzve8LQN1g5WUHo0Kvk1mawWjxX7a"
+    crossorigin="anonymous"></script>
+
+  <title>Interview</title>
+  <style></style>
+</head>
+
+<body onload="getuser()">
+  <nav class="navbar navbar-light bg-light">
+    <a class="navbar-brand" href="index.html">
+      <!-- <img src="../frontend/assets/logo.png" width="" height="50" alt="50"> -->
+    </a>
+    <div class="navbar-right user" style="padding: 5px; margin: 10px">
+      <div class="useritem" id="useritem"></div>
+      <img src="./assets/pic.png" />
+    </div>
+  </nav>
+  <audio id="myAudio">
+    <source src="./alert.mp3" type="audio/mp3" />
+    <!-- <source src="./mj.mp3" type="audio/mp3"> -->
+  </audio>
+  <div class="inter-panel">
+    <textarea id="bot" rows="6" cols="50" readonly>
+
+
+          Hello, Welcome to AIS - AI Interview System
+
+      </textarea><br />
+    <textarea id="output" rows="10" cols="50" readonly></textarea><br />
+    <div>
+
+      <button id="start" class="inter-btn"> <img height="16" src="./assets/play-solid.svg" /> Start Recording</button>
+      <button id="stop" class="inter-btn" disabled> <img height="16" src="./assets/stop-solid.svg" /> Stop
+        Recording</button>
+    </div>
+    <br />
+    <div>
+      <button id="reset" class="inter-btn"> <img height="16" src="./assets/arrow-rotate-left-solid.svg" /> Reset Answer
+      </button>
+      <button id="submit" class="inter-btn" style="background-color: lightgreen">
+        <img height="16" src="./assets/arrow-right-solid.svg" /> Submit Answer
+      </button>
+      
+      <div id="resumeUploadSection" style="display: none; margin-top: 20px; text-align: center;">
+        <input type="file" id="resumeInput" accept=".pdf,.doc,.docx" 
+            style="padding: 10px; border: 1px solid #ccc; border-radius: 5px; display: block; margin: 10px auto;" />
+        
+        <button id="uploadResume" class="inter-btn" 
+            style="background-color: lightblue; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+            Upload Resume
+        </button>
+      </div>    
+    </div>
+  </div>
+  
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+  integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+  integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="js/login.js"></script>
+<script src="js/interview.js"></script>
+
+</html>

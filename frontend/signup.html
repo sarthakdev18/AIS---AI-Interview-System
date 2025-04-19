@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/index.css">
+  <title>SIGNUP</title>
+</head>
+<body>
+  <nav class="navbar navbar-light bg-light">
+    <a class="navbar-brand" href="index.html">
+      <!-- <img src="../frontend/assets/logo.png" width="" height="55" alt="50"> -->
+    </a>
+  </nav>
+  <div class="container s">
+    <div class="row sCon2">
+      <div class="col-md-6">
+        <div class="signup col-md-8">
+          <h3>Sign Up</h3>
+          <div>
+            <label>Name</label>
+            <input type="text" id="name" placeholder="Enter your Full Name"/>
+          </div>
+          <div>
+            <label>E-Mail ID</label>
+            <input type="email" id="email" placeholder="Enter your E-Mail ID"/>
+          </div>
+          <div>
+            <label>Password</label>
+            <input type="password"  placeholder="Enter Your Password" id="password"/>
+          </div>
+          <div>
+            <button type="button" id="signup" onclick="validateAndRegister()">Sign Up</button>
+            <br>
+            <p>Already have an account? <a href="login.html" ><span>Login</span></a></p>
+          </div>
+          <div id="message"></div>
+        </div>
+      </div>
+      <div class="col-md-6 imgS">
+        <!-- <img src="../frontend/assets/Saly-14.png"> -->
+        <img src="./assets/main-logo.png">
+      </div>
+    </div>
+  </div>
+      
+     <script>
+      async function validateAndRegister() {
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const messageElement = document.getElementById('message');
+      messageElement.textContent = '';
+
+      console.log("Form data:", { name, email, password });
+
+      try {
+        // Send POST request to backend API
+        const response = await fetch('http://localhost:8800/user/signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name,
+            email,  
+            password,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          messageElement.textContent = 'User created successfully!';
+          // Redirect to login page after successful signup
+          window.location.href = 'login.html';
+        } else {
+          messageElement.textContent = 'Error: ' + data.message;
+        }
+      } catch (error) {
+        console.error('Error during signup:', error);
+        messageElement.textContent = 'Signup failed!';
+      }
+    }
+     </script>
+    
+
+</body>
+</html>
